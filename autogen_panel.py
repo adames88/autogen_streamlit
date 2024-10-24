@@ -13,7 +13,7 @@ user_proxy = autogen.ConversableAgent(
     system_message="Give the task, and send instructions to writer to refine the financial report.",
     code_execution_config=False,
     llm_config=llm_config,
-    human_input_mode="ALWAYS",
+    human_input_mode="Never",
 )
 
 planner = autogen.ConversableAgent(
