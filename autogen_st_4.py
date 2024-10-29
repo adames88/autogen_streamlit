@@ -166,6 +166,16 @@ manager = autogen.GroupChatManager(
     is_termination_msg=is_termination_msg,
 )
 
+# Avatars for each agent (using emojis)
+avatars = {
+    "Planner": "🗓",
+    "Engineer": "👩‍💻",
+    "Executor": "🛠",
+    "Writer": "✍",
+    "Admin": "👨‍💼",
+    "Critic": "🔍"
+}
+
 # Streamlit UI Setup
 st.title("Agent Conversation and Task Management")
 
@@ -187,15 +197,7 @@ if "admin_waiting" not in st.session_state:
     st.session_state["admin_waiting"] = False
     st.session_state["admin_prompt"] = ""  # To store admin's prompt
 
-# Avatars for each agent (using emojis)
-avatars = {
-    "Planner": "🗓",
-    "Engineer": "👩‍💻",
-    "Executor": "🛠",
-    "Writer": "✍",
-    "Admin": "👨‍💼",
-    "Critic": "🔍"
-}
+
 
 # Function to display messages in Streamlit with avatars
 def print_messages(recipient, messages, sender, config):
