@@ -2,7 +2,7 @@ import streamlit as st
 import yfinance as yf
 import matplotlib.pyplot as plt
 import autogen
-from utils import get_openai_api_key
+from tool.utils import get_openai_api_key
 from autogen.coding import LocalCommandLineCodeExecutor
 
 # Set up the OpenAI API key

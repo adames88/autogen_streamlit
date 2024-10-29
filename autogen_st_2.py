@@ -3,7 +3,7 @@ import yfinance as yf
 import matplotlib.pyplot as plt
 import autogen
 import asyncio
-from utils import get_openai_api_key
+from tool.utils import get_openai_api_key
 from autogen.coding import LocalCommandLineCodeExecutor
 from autogen import AssistantAgent, UserProxyAgent, ConversableAgent
 
@@ -41,6 +41,8 @@ avatars = {
     "Writer": "✍"
 }
 
+
+
 # Custom stock data retrieval and plotting functions
 def get_stock_prices(stock_symbols, start_date, end_date):
     stock_data = yf.download(stock_symbols, start=start_date, end=end_date)
@@ -60,18 +62,17 @@ def plot_stock_prices(stock_prices, filename):
 
 # Define Executor with provided functions
 executor_func = LocalCommandLineCodeExecutor(
-    timeout=60,
+    timeout=120,
     work_dir="coding",
-    functions=[get_stock_prices, plot_stock_prices],
 )
 
-executor = TrackableConversableAgent(
+executor = TrackableUserProxyAgent(
     name="Executor",
     description="Execute the code written by the Engineer and report the result. Execute multiple steps if provided."
                 "When you have fully completed the execution of code successfully, give the results and information to the writer."
                 "Save graph, visualisation plots and data in the current directory and share it with the writer.",
     human_input_mode="NEVER",
-    code_execution_config={"last_n_messages": 5, "executor": executor_func},
+    code_execution_config={"last_n_messages": 3, "executor": executor_func},
 )
 
 # Planner with enhanced multi-step handling
@@ -108,23 +109,43 @@ writer = TrackableConversableAgent(
 
 # Define Admin Agent (user_proxy)
 user_proxy = TrackableUserProxyAgent(
-    name="initialiser",
+    name="Admin",
+    system_message="A human admin. Interact with the planner to discuss the plan. Plan execution needs to be approved by this admin.",
     code_execution_config=False,
 )
+
+# # managing workflow for agents
+# def state_transition(last_speaker, groupchat):
+#     messages = groupchat.messages
+
+#     if last_speaker is user_proxy:
+#         # init -> retrieve
+#         return planner
+#     elif last_speaker is planner:
+#         # retrieve: action 1 -> action 2
+#         return engineer
+#     elif last_speaker is engineer:
+#         # retrieve: action 1 -> action 2
+#         return executor
+#     elif last_speaker is executor:
+#         if messages[-1]["content"] == "exitcode: 1":
+#             # retrieve --(execution failed)--> retrieve
+#             return engineer
+#         elif 'possibly delisted' or 'no price data found' in messages[-1]["content"]:
+#               return engineer
+
+#         else:
+#             # retrieve --(execution success)--> writer
+#             return writer
+#     elif last_speaker == "writer":
+#         # research -> end
+#         return None
 
 # Group Chat for Agents
 groupchat = autogen.GroupChat(
     agents=[user_proxy, engineer, writer, executor, planner],
     messages=[],
-    max_round=50,
-    allowed_or_disallowed_speaker_transitions={
-        user_proxy: [planner],
-        planner: [engineer, executor, writer],
-        engineer: [executor,planner],
-        executor: [writer,engineer],
-        writer: [planner],
-    },
-    speaker_transitions_type="allowed",
+    max_round=50
 )
 
 manager = autogen.GroupChatManager(groupchat=groupchat, llm_config=llm_config)

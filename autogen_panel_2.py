@@ -2,7 +2,7 @@ import autogen
 import panel as pn
 import yfinance as yf
 import matplotlib.pyplot as plt
-from utils import get_openai_api_key
+from tool.utils import get_openai_api_key
 from autogen.coding import LocalCommandLineCodeExecutor
 
 get_openai_api_key()

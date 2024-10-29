@@ -1,7 +1,7 @@
 import autogen
 import panel as pn
 import asyncio
-from utils import get_openai_api_key
+from tool.utils import get_openai_api_key
 
 get_openai_api_key()
 

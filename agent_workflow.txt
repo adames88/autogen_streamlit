@@ -1,0 +1,35 @@
+groupChat.message = gm
+
+Planner
+---------------
+
+if Planner:
+
+return engineer
+
+
+engineer
+-----------------
+
+if engineer:
+
+return executor
+
+
+executor
+------------------
+
+if executor:
+
+    if gm == 'exit code 1':
+        return engineer
+    elif gm == empty:
+        return engineer
+    else:
+        return writer
+
+writer
+---------------------
+
+if writer:
+    if gm == 

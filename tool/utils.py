@@ -11,3 +11,11 @@ def get_openai_api_key():
     load_env()
     openai_api_key = os.getenv("OPENAI_API_KEY")
     return openai_api_key
+
+def get_agentops_api_key():
+    load_env()
+    agentops_api_key = os.getenv("AGENTOPS_API_KEY")
+    return agentops_api_key
+
+if __name__ == '__main__':
+    print(get_agentops_api_key())
